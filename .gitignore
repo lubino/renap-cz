@@ -67,3 +67,4 @@ fastlane/test_output
 .idea
 *.iml
 
+Package.pins
