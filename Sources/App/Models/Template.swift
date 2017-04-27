@@ -33,9 +33,16 @@ final class Template: Model{
     }
     
     static func prepare(_ database: Database) throws {
+        try database.create("templates") { users in
+            users.id()
+            users.string("name")
+            users.string("contentType")
+            users.string("data")
+        }
     }
     
     static func revert(_ database: Database) throws {
+        try database.delete("templates")
     }
 }
 

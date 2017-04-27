@@ -49,9 +49,18 @@ final class Page: Model{
     }
     
     static func prepare(_ database: Database) throws {
+        try database.create("pages") { users in
+            users.id()
+            users.parent(idKey: "parentId", optional: true, unique: false)
+            users.parent(idKey: "templateId", optional: true, unique: false)
+            users.string("name")
+            users.string("urlPath")
+            users.string("data")
+        }
     }
     
     static func revert(_ database: Database) throws {
+        try database.delete("pages")
     }
 }
 
