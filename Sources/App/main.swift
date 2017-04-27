@@ -1,12 +1,11 @@
 import Vapor
 import VaporPostgreSQL
-import PostgreSQL
-//import Mustache
-//import VaporMustache
 
-let drop = Droplet(
-//    providers: [VaporPostgreSQL.Provider.self]
-)
+let drop = Droplet()
+
+drop.preparations += Web.self
+drop.preparations += Page.self
+drop.preparations += Template.self
 
 try drop.addProvider(VaporPostgreSQL.Provider)
 
@@ -23,29 +22,16 @@ drop.get("hello") { req in
     return "Hello, world."
 }
 
-drop.get("t") { req in
-    if let db = drop.database?.driver as? PostgreSQLDriver {
-        let results = try db.execute("SELECT * FROM web Order By name")
-        var result = ""
-        for row in results {
-            for column in row {
-                let key = column.key
-                let value = column.value.string
-                result = "\(result), \(key):\(value!)"
-            }
-        }
-        
-        return result;
-    }
+drop.get("web") { req in
+    return try JSON(node: Web.all().makeNode())
+}
 
-    let data: [String: Any] = [
-        "name": "Arthur",
-        "late": true
-    ]
-    //let template = try Template(string: "Hello {{name}}")
-    //return template.render(data)
-    return "No db connection"
-    
+drop.get("page") { req in
+    return try JSON(node: Page.all().makeNode())
+}
+
+drop.get("template") { req in
+    return try JSON(node: Template.all().makeNode())
 }
 
 drop.run()
