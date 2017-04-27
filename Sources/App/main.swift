@@ -24,30 +24,28 @@ drop.get("hello") { req in
 }
 
 drop.get("t") { req in
+    if let db = drop.database?.driver as? PostgreSQLDriver {
+        let results = try db.execute("SELECT * FROM web Order By name")
+        var result = ""
+        for row in results {
+            for column in row {
+                let key = column.key
+                let value = column.value.string
+                result = "\(result), \(key):\(value!)"
+            }
+        }
+        
+        return result;
+    }
+
     let data: [String: Any] = [
         "name": "Arthur",
         "late": true
     ]
     //let template = try Template(string: "Hello {{name}}")
     //return template.render(data)
-    let postgreSQL =  PostgreSQL.Database(
-        host: "ec2-54-247-189-141.eu-west-1.compute.amazonaws.com",
-        dbname: "d45b0fv9ofti1j",
-        user: "samyfioimiutbn",
-        password: "d6f9b26890479397b198fe278dbd34bc2dca6f05c105dd07caee7fd40a0bb4fb"
-    )
+    return "No db connection"
     
-    let results = try postgreSQL.execute("SELECT * FROM web Order By name", [])
-    var result = ""
-    for row in results {
-        for column in row {
-            let key = column.key
-            let value = column.value.string
-            result = "\(result), \(key):\(value!)"
-        }
-    }
-    
-    return result;
 }
 
 drop.run()
