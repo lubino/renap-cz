@@ -37,7 +37,7 @@ drop.get("t") { req in
         password: "d6f9b26890479397b198fe278dbd34bc2dca6f05c105dd07caee7fd40a0bb4fb"
     )
     
-    let results = try postgreSQL.execute("SELECT * FROM web OrderBy name", [])
+    let results = try postgreSQL.execute("SELECT * FROM web Order By name", [])
     var result = ""
     for row in results {
         for column in row {
